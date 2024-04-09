@@ -246,7 +246,7 @@ while(<>) {
     } else {
         # RFC 3339 timestamp format?
         next unless((($msgYr, $msgMon, $msgDay, $msgHr, $msgMin, $msgSec, $logRmdr) =
-            /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:[\+\-](?:\d{2}):(?:\d{2})|Z) \S+ (.+)$/o) == 10);
+            /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{6})(?:[\+\-](?:\d{2}):(?:\d{2})|Z) \S+ (.+)$/o) == 7);
         # RFC 3339 months start at "1", we index from 0
         --$msgMon;
     }
@@ -568,9 +568,10 @@ sub get_datestr {
     } elsif($dateOpt ne "today") {
         die "$usageMsg\n";
     }
-    my ($t_mday, $t_mon) = (localtime($time))[3,4];
+    my ($t_mday, $t_mon, $t_year) = (localtime($time))[3,4,5];
+    $t_year = $t_year + 1900;
 
-    return sprintf("%s %2d", $monthNames[$t_mon], $t_mday);
+    return sprintf("%d-%02d-%02d", $t_year, $t_mon + 1, $t_mday);
 }
 
 
